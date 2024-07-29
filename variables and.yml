@@ -16,15 +16,23 @@ trigger:
       - REDMI
 pool: default
 variables:      # pipeline-level
-  MY_INFRAPIPELINE: '$(System.DefaultWorkingDirectory)/Envt/dev'
+  MY_INFRAPIPELINE: '$(System.DefaultWorkingDirectory)/${{ parameters.Envt }}'
   MY_INFRASTORAGE: 'strge0093'
+parameters:
+- name: Envt 
+  displayName: Envt 
+  type: string
+  default: dev
+  values:
+    - dev
+    - qa
 
 
 stages:
-  - stage: terraform init and plan
+  - stage: terraform_init_plan
     jobs:
       - job: terraform_init
-        stpes:
+        steps:
         - task: TerraformInstaller@1
           inputs:
             terraformVersion: 'latest'
@@ -54,15 +62,15 @@ stages:
             environmentServiceNameAzureRM: 'infrapipeline'
         - task: TerraformTaskV4@4
           inputs:
-            displayName: terraform plan
+            displayName: terraform_plan
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: ' MY_INFRAPIPELINE'
             environmentServiceNameAzureRM: 'infrapipeline'
-  - stage: terraform init and apply
+  - stage: terraform_init_apply
     jobs:
       - job: terraform_init
-        stpes:
+        steps:
         - task: TerraformTaskV4@4
           inputs:
             provider: 'azurerm'
@@ -74,7 +82,7 @@ stages:
             backendAzureRmContainerName: 'newcontainer'
         - task: TerraformTaskV4@4
           inputs:
-            displayName: terraform apply
+            displayName: terraform_apply
             provider: 'azurerm'
             command: 'apply'
             workingDirectory: ' MY_INFRAPIPELINE'
