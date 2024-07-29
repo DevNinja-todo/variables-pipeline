@@ -6,9 +6,11 @@ infrarg-module = {
 }
 
 infrastrg-module = {
+    strrg01 ={
     strg_name = "devinfrastrg"
     location ="eastasia"
     rg_name = "dev-infrarg"
     account_teir_name = "Standard"
     account_rep_name = "LRS"
+    }
 }
