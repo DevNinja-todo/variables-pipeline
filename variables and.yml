@@ -1,0 +1,84 @@
+name: variables and parametrs-pipeline
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - master
+    exclude:
+      - features
+  paths:
+    include:
+      - Envt/dev
+      - Envt/qa
+    exclude:
+      - REDMI
+pool: default
+variables:      # pipeline-level
+  MY_INFRAPIPELINE: '$(System.DefaultWorkingDirectory)/Envt/dev'
+  MY_INFRASTORAGE: 'strge0093'
+
+
+stages:
+  - stage: terraform init and plan
+    jobs:
+      - job: terraform_init
+        stpes:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: terraform_init
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: 'MY_INFRAPIPELINE'
+            backendServiceArm: 'infrapipeline'
+            backendAzureRmResourceGroupName: 'Jay-rg-donot-delete'
+            backendAzureRmStorageAccountName: 'MY_INFRASTORAGE'
+            backendAzureRmContainerName: 'newcontainer'
+            backendAzureRmKey: 'variables.tfstate.tf'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: ' MY_INFRAPIPELINE'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            workingDirectory: ' MY_INFRAPIPELINE'
+            outputTo: 'console'
+            customCommand: 'fmt'
+            environmentServiceNameAzureRM: 'infrapipeline'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: terraform plan
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: ' MY_INFRAPIPELINE'
+            environmentServiceNameAzureRM: 'infrapipeline'
+    stage: terraform init and apply
+    jobs:
+      - job: terraform_init
+        stpes:
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: ' MY_INFRAPIPELINE'
+            backendServiceArm: 'infrapipeline'
+            backendAzureRmResourceGroupName: 'Jay-rg-donot-delete'
+            backendAzureRmStorageAccountName: 'MY_INFRASTORAGE'
+            backendAzureRmContainerName: 'newcontainer'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: terraform apply
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: ' MY_INFRAPIPELINE'
+            environmentServiceNameAzureRM: 'infrapipeline'
+
+       
+
