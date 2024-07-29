@@ -21,6 +21,69 @@ stages:
     jobs:
       - job: dev_infra_pipeline_test
         steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: infrapipeline_init
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+            backendServiceArm: 'infrapipeline'
+            backendAzureRmResourceGroupName: 'Jay-rg-donot-delete'
+            backendAzureRmStorageAccountName: 'strge0093'
+            backendAzureRmContainerName: 'newcontainer'
+
+        - task: TerraformTaskV4@4
+          inputs:
+            displayNmae: infrapipeline_fmt
+            provider: 'azurerm'
+            command: 'custom'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+            outputTo: 'console'
+            customCommand: 'fmt'
+            environmentServiceNameAzureRM: 'infrapipeline'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: infrapipeline_validate
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+            environmentServiceNameAzureRM: 'infrapipeline'
+  - stage: infrapipeline_deploy
+    jobs:
+      - job: infrapipeline
+        steps:
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: infrapipeline_init
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+            backendServiceArm: 'infrapipeline'
+            backendAzureRmResourceGroupName: 'Jay-rg-donot-delete'
+            backendAzureRmStorageAccountName: 'strge0093'
+            backendAzureRmContainerName: 'newcontainer'
+            backendAzureRmKey: 'devinfra.tfstate.tf'
+        - task: TerraformTaskV4@4
+          inputs:
+            displayName: infrapipeline_apply
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Envt/dev'
+            environmentServiceNameAzureRM: 'infrapipeline'
+        
+          
+          
+
+
+        
         
 
 
