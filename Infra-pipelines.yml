@@ -1,0 +1,29 @@
+Nmae: Infrapipeline
+
+trigger:
+  batch: true
+  branches:
+   include:
+     - main
+     - master
+   exclude:
+     - features
+  paths:
+    include:
+      - Envt/dev
+    exclude:
+      - Envt/qa
+pool: default
+
+stages: 
+  - stage: devinfrapipeline
+    displayName: dev_infrapipeline
+    jobs:
+      - job: dev_infra_pipeline_test
+        steps:
+        
+
+
+
+
+  
