@@ -10,7 +10,7 @@ infrastrg-module = {
     strg_name = "devinfrastrg"
     location ="eastasia"
     rg_name = "dev-infrarg"
-    account_teir_name = "Standard"
+    account_tier_name = "Standard"
     account_rep_name = "LRS"
     }
 }
