@@ -34,6 +34,7 @@ stages:
             backendAzureRmResourceGroupName: 'Jay-rg-donot-delete'
             backendAzureRmStorageAccountName: 'strge0093'
             backendAzureRmContainerName: 'newcontainer'
+            backendAzureRmKey: 'devinfra.tfstate.tf'
 
         - task: TerraformTaskV4@4
           inputs:
