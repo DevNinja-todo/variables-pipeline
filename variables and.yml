@@ -59,7 +59,7 @@ stages:
             command: 'plan'
             workingDirectory: ' MY_INFRAPIPELINE'
             environmentServiceNameAzureRM: 'infrapipeline'
-    stage: terraform init and apply
+  - stage: terraform init and apply
     jobs:
       - job: terraform_init
         stpes:
