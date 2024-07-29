@@ -17,7 +17,7 @@ trigger:
 pool: default
 variables:      # pipeline-level
   MY_INFRAPIPELINE: '$(System.DefaultWorkingDirectory)/${{ parameters.Envt }}'
-  MY_INFRASTORAGE: 'strge0093'
+  MY_INFRASTORAGE: '$(strge0093)'
 parameters:
 - name: Envt 
   displayName: Envt 
